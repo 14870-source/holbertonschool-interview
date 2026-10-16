@@ -20,7 +20,7 @@ def main():
     valid_codes = [200, 301, 400, 401, 403, 404, 405, 500]
 
     pattern = (
-        r'^(\S+) - \[.*?\] '
+        r'^(\S+) - \[(.*?)\] '
         r'"GET /projects/260 HTTP/1\.1" '
         r'(\d+) (\d+)$'
     )
@@ -31,13 +31,15 @@ def main():
             match = re.match(pattern, line.rstrip('\n'))
 
             if match:
-                code = int(match.group(2))
-                size = int(match.group(3))
+                code = int(match.group(3))
+                size = int(match.group(4))
 
                 total_size += size
 
                 if code in valid_codes:
-                    status_codes[code] = status_codes.get(code, 0) + 1
+                    status_codes[code] = (
+                        status_codes.get(code, 0) + 1
+                    )
 
             if line_count % 10 == 0:
                 print_stats(total_size, status_codes)
