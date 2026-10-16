@@ -28,7 +28,8 @@ def main():
     try:
         for line in sys.stdin:
             line_count += 1
-            match = pattern.match(line.rstrip('\n'))
+            match = pattern.match(line.rstrip())
+            
 
             if match:
                 code = int(match.group(3))
