@@ -34,8 +34,9 @@ def main():
                 code = int(match.group(2))
                 size = int(match.group(3))
 
+                total_size += size
+
                 if code in valid_codes:
-                    total_size += size
                     status_codes[code] = status_codes.get(code, 0) + 1
 
             if line_count % 10 == 0:
