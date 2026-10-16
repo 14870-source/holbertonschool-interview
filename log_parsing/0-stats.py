@@ -20,12 +20,10 @@ def main():
     valid_codes = (200, 301, 400, 401, 403, 404, 405, 500)
 
     pattern = (
-    r'^(\S+) - \[.+\] '
-    r'"GET /projects/260 HTTP/1\.1" '
-    r'(\d+) (\d+)$'
-    
+        r'^(\S+) - \[.+\] '
+        r'"GET /projects/260 HTTP/1\.1" '
+        r'(\d+) (\d+)$'
     )
-
 
     try:
         for line in sys.stdin:
