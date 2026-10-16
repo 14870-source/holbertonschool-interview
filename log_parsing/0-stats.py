@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3
 """Parse log lines and print accumulated metrics."""
 
@@ -7,14 +6,14 @@ import re
 
 
 def print_stats(total_size, status_codes):
-    """Print the total file size and status code counts."""
+    """Print accumulated metrics."""
     print("File size: {}".format(total_size))
     for code in sorted(status_codes):
         print("{}: {}".format(code, status_codes[code]))
 
 
 def main():
-    """Read stdin and compute log metrics."""
+    """Read input and calculate log metrics."""
     total_size = 0
     status_codes = {}
     line_count = 0
@@ -29,8 +28,7 @@ def main():
     try:
         for line in sys.stdin:
             line_count += 1
-            line = line.rstrip('\n')
-            match = re.match(pattern, line)
+            match = re.match(pattern, line.rstrip('\n'))
 
             if match:
                 code = int(match.group(2))
