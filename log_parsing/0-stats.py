@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+"""Read log lines and print accumulated metrics."""
+
 import sys
 import re
 
