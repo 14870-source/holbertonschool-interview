@@ -20,8 +20,8 @@ def main():
     valid_codes = [200, 301, 400, 401, 403, 404, 405, 500]
 
     pattern = (
-        r'^(\S+) - \[(.*?)\] '
-        r'"GET /projects/260 HTTP/1\.1" '
+        r'^(\S+) - \[.+\] '
+        r'".+" '
         r'(\d+) (\d+)$'
     )
 
@@ -31,9 +31,8 @@ def main():
             match = re.match(pattern, line.rstrip('\n'))
 
             if match:
-                code = int(match.group(3))
-                size = int(match.group(4))
-
+                code = int(match.group(2))
+                size = int(match.group(3))
                 total_size += size
 
                 if code in valid_codes:
@@ -53,4 +52,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
