@@ -17,19 +17,18 @@ def main():
     total_size = 0
     status_codes = {}
     line_count = 0
+    valid_codes = (200, 301, 400, 401, 403, 404, 405, 500)
 
     pattern = re.compile(
-        r'^(\S+) - \[(.+?)\] '
+        r'^(\S+) - \[(.*?)\] '
         r'"GET /projects/260 HTTP/1\.1" '
         r'(\d+) (\d+)$'
     )
-    valid_codes = (200, 301, 400, 401, 403, 404, 405, 500)
 
     try:
         for line in sys.stdin:
             line_count += 1
-            match = pattern.match(line.rstrip())
-            
+            match = pattern.fullmatch(line.rstrip('\n'))
 
             if match:
                 code = int(match.group(3))
