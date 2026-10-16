@@ -6,26 +6,24 @@ import re
 
 
 def print_stats(total_size, status_codes):
-    """Print the accumulated statistics."""
+    """Print accumulated statistics."""
     print("File size: {}".format(total_size))
     for code in sorted(status_codes):
         print("{}: {}".format(code, status_codes[code]))
 
 
 def main():
-    """Read stdin and calculate log metrics."""
+    """Read input and calculate log metrics."""
     total_size = 0
     status_codes = {}
     line_count = 0
+    valid_codes = (200, 301, 400, 401, 403, 404, 405, 500)
 
     pattern = (
-        r'^(\d{1,3}(?:\.\d{1,3}){3}) - '
-        r'\[([^\]]+)\] '
+        r'^(\S+) - \[.+\] '
         r'"GET /projects/260 HTTP/1\.1" '
         r'(\d+) (\d+)$'
     )
-
-    valid_codes = (200, 301, 400, 401, 403, 404, 405, 500)
 
     try:
         for line in sys.stdin:
@@ -33,11 +31,8 @@ def main():
             match = re.match(pattern, line.rstrip('\n'))
 
             if match:
-                code_text = match.group(3)
-                size_text = match.group(4)
-
-                code = int(code_text)
-                size = int(size_text)
+                code = int(match.group(2))
+                size = int(match.group(3))
                 total_size += size
 
                 if code in valid_codes:
