@@ -1,54 +1,48 @@
 #!/usr/bin/python3
-"""Read log lines and compute metrics."""
-
+"""Reads stdin line by line and computes metrics."""
 import sys
-import re
 
 
-def print_stats(total_size, status_codes):
-    """Print accumulated statistics."""
-    print("File size: {}".format(total_size))
-    for code in sorted(status_codes):
-        print("{}: {}".format(code, status_codes[code]))
+def print_statistics(total_file_size, status_counts):
+    """Print accumulated file size and status code counts."""
+    print("File size: {}".format(total_file_size))
+    for code in sorted(status_counts):
+        if status_counts[code] > 0:
+            print("{}: {}".format(code, status_counts[code]))
 
 
 def main():
-    """Read input and calculate log metrics."""
-    total_size = 0
-    status_codes = {}
+    """Process log lines from stdin."""
+    total_file_size = 0
+    status_counts = {200: 0, 301: 0, 400: 0, 401: 0,
+                     403: 0, 404: 0, 405: 0, 500: 0}
     line_count = 0
-    valid_codes = (200, 301, 400, 401, 403, 404, 405, 500)
-
-    pattern = re.compile(
-        r'^(\S+)\s+-\s+\[([^\]]+)\]\s+'
-        r'"GET /projects/260 HTTP/1\.1"\s+'
-        r'(\d+)\s+(\d+)\s*$'
-    )
 
     try:
         for line in sys.stdin:
             line_count += 1
-            line = line.strip()
-            match = pattern.fullmatch(line)
+            parts = line.split()
 
-            if match:
-                code = int(match.group(3))
-                size = int(match.group(4))
-                total_size += size
-
-                if code in valid_codes:
-                    status_codes[code] = (
-                        status_codes.get(code, 0) + 1
-                    )
+            if len(parts) >= 2:
+                try:
+                    total_file_size += int(parts[-1])
+                except ValueError:
+                    pass
+                try:
+                    code = int(parts[-2])
+                    if code in status_counts:
+                        status_counts[code] += 1
+                except ValueError:
+                    pass
 
             if line_count % 10 == 0:
-                print_stats(total_size, status_codes)
-
-        if line_count % 10 != 0 or line_count == 0:
-            print_stats(total_size, status_codes)
+                print_statistics(total_file_size, status_counts)
 
     except KeyboardInterrupt:
-        print_stats(total_size, status_codes)
+        print_statistics(total_file_size, status_counts)
+        raise
+
+    print_statistics(total_file_size, status_counts)
 
 
 if __name__ == "__main__":
